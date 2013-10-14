@@ -1,0 +1,7 @@
+version: "0.1.0"
+entryPoint: "point"
+remoteDependencies: [
+  "http://strd6.github.io/require/v0.2.2.js"
+]
+dependencies:
+  point: "STRd6/point:v0.1.0-alpha.0"

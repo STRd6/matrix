@@ -12,7 +12,7 @@ Matrix
 
 Creates a matrix for 2d affine transformations.
 
-`concat`, `inverse`, `rotate`, `scale` and `translate` return new matrices with 
+`concat`, `inverse`, `rotate`, `scale` and `translate` return new matrices with
 the transformations applied. The matrix is not modified in place.
 
 Returns the identity matrix when called with no arguments.

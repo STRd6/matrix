@@ -1,8 +1,6 @@
 Matrix
 ======
 
-    Point = require "point"
-
 ```
    _        _
   | a  c tx  |
@@ -28,6 +26,11 @@ Returns the identity matrix when called with no arguments.
       d: d ? 1
       tx: tx ? 0
       ty: ty ? 0
+
+A `Point` constructor for the methods that return points. This can be overridden
+with a compatible constructor if you want fancier points.
+
+    Matrix.Point = require "point"
 
     Matrix.prototype =
 
@@ -61,7 +64,7 @@ does not consider the translation parameters tx and ty.
 Returns a new `Point` transformed by this matrix ignoring tx and ty.
 
       deltaTransformPoint: (point) ->
-        Point(
+        Matrix.Point(
           @a * point.x + @c * point.y,
           @b * point.x + @d * point.y
         )
@@ -113,7 +116,7 @@ Returns the result of applying the geometric transformation represented by the
 Matrix object to the specified point.
 
       transformPoint: (point) ->
-        Point(
+        Matrix.Point(
           @a * point.x + @c * point.y + @tx,
           @b * point.x + @d * point.y + @ty
         )

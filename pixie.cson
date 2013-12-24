@@ -1,7 +1,4 @@
-version: "0.1.0"
+version: "0.2.0"
 entryPoint: "matrix"
-remoteDependencies: [
-  "http://strd6.github.io/require/v0.2.2.js"
-]
 dependencies:
-  point: "STRd6/point:v0.1.0"
+  point: "distri/point:v0.2.0"

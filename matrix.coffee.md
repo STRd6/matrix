@@ -30,7 +30,7 @@ Returns the identity matrix when called with no arguments.
 A `Point` constructor for the methods that return points. This can be overridden
 with a compatible constructor if you want fancier points.
 
-    Matrix.Point = require "point"
+    Matrix.Point = require "./point"
 
     Matrix.prototype =
 

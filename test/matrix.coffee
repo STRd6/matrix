@@ -1,5 +1,5 @@
 Matrix = require "../matrix"
-Point = require "point"
+Point = require "../point"
 
 ok = assert
 equals = assert.equal

@@ -1,4 +1,7 @@
-window["distri/matrix:v0.2.0"]({
+(function(pkg) {
+  // Expose a require for our package so scripts can access our modules
+  window.require = Require.generateFor(pkg);
+})({
   "source": {
     "LICENSE": {
       "path": "LICENSE",

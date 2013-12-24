@@ -32,18 +32,6 @@
               <div class="pilwrap">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">Point = require <span class="string">"point"</span></code></pre>
-</div>
-        </li>
-        
-        
-        <li id="section-3">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
               <pre><code>   _        _
   | a  c tx  |
   | b  d ty  |
@@ -64,7 +52,21 @@ the transformations applied. The matrix is not modified in place.</p>
   c: c ? <span class="number">0</span>
   d: d ? <span class="number">1</span>
   tx: tx ? <span class="number">0</span>
-  ty: ty ? <span class="number">0</span>
+  ty: ty ? <span class="number">0</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>A <code>Point</code> constructor for the methods that return points. This can be overridden
+with a compatible constructor if you want fancier points.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">Matrix.Point = require <span class="string">"point"</span>
 
 Matrix.prototype =</code></pre>
 </div>
@@ -123,7 +125,7 @@ does not consider the translation parameters tx and ty.</p>
 
             </div>
             <div class="content"><pre><code class="lang-coffeescript">  deltaTransformPoint: (point) -&gt;
-    Point(
+    Matrix.Point(
       <span class="property">@a</span> * point.x + <span class="property">@c</span> * point.y,
       <span class="property">@b</span> * point.x + <span class="property">@d</span> * point.y
     )</code></pre>
@@ -227,7 +229,7 @@ Matrix object to the specified point.</p>
 
             </div>
             <div class="content"><pre><code class="lang-coffeescript">  transformPoint: (point) -&gt;
-    Point(
+    Matrix.Point(
       <span class="property">@a</span> * point.x + <span class="property">@c</span> * point.y + <span class="property">@tx</span>,
       <span class="property">@b</span> * point.x + <span class="property">@d</span> * point.y + <span class="property">@ty</span>
     )</code></pre>
@@ -451,7 +453,15 @@ about the given point.</p>
   </div>
   <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js"></script>
-<script src="http://strd6.github.io/require/v0.2.2.js"></script>
-<script src="http://strd6.github.io/interactive/v0.8.0.js"></script><script src="package.js"></script>
+<script src="http://strd6.github.io/require/v0.2.2.js"></script><script>
+  $.ajax({
+    url: "http://strd6.github.io/interactive/v0.8.1.jsonp",
+    dataType: "jsonp",
+    jsonpCallback: "STRd6/interactive:v0.8.1",
+    cache: true
+  }).then(function(PACKAGE) {
+    Require.generateFor(PACKAGE)("./" + PACKAGE.entryPoint)
+  })
+</script><script src="package.js"></script>
 </body>
 </html>

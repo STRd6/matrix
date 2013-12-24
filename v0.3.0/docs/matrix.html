@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>matrix</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="http://strd6.github.io/cdn/parallel/docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    <ul class="sections">
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="matrix">Matrix</h1>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">
+</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <pre><code>   _        _
+  | a  c tx  |
+  | b  d ty  |
+  |_0  0  1 _|</code></pre>
+<p>Creates a matrix for 2d affine transformations.</p>
+<p><code>concat</code>, <code>inverse</code>, <code>rotate</code>, <code>scale</code> and <code>translate</code> return new matrices with
+the transformations applied. The matrix is not modified in place.</p>
+<p>Returns the identity matrix when called with no arguments.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript"><span class="function"><span class="title">Matrix</span></span> = (a, b, c, d, tx, ty) -&gt;
+  <span class="keyword">if</span> isObject(a)
+    {a, b, c, d, tx, ty} = a
+
+  __proto__: Matrix.prototype
+  a: a ? <span class="number">1</span>
+  b: b ? <span class="number">0</span>
+  c: c ? <span class="number">0</span>
+  d: d ? <span class="number">1</span>
+  tx: tx ? <span class="number">0</span>
+  ty: ty ? <span class="number">0</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>A <code>Point</code> constructor for the methods that return points. This can be overridden
+with a compatible constructor if you want fancier points.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">Matrix.Point = require <span class="string">"./point"</span>
+
+Matrix.prototype =</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p><code>concat</code> returns the result of this matrix multiplied by another matrix
+combining the geometric effects of the two. In mathematical terms,
+concatenating two matrixes is the same as combining them using matrix multiplication.
+If this matrix is A and the matrix passed in is B, the resulting matrix is A x B
+<a href="http://mathworld.wolfram.com/MatrixMultiplication.html">http://mathworld.wolfram.com/MatrixMultiplication.html</a></p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">  concat: (matrix) -&gt;
+    Matrix(
+      <span class="property">@a</span> * matrix.a + <span class="property">@c</span> * matrix.b,
+      <span class="property">@b</span> * matrix.a + <span class="property">@d</span> * matrix.b,
+      <span class="property">@a</span> * matrix.c + <span class="property">@c</span> * matrix.d,
+      <span class="property">@b</span> * matrix.c + <span class="property">@d</span> * matrix.d,
+      <span class="property">@a</span> * matrix.tx + <span class="property">@c</span> * matrix.ty + <span class="property">@tx</span>,
+      <span class="property">@b</span> * matrix.tx + <span class="property">@d</span> * matrix.ty + <span class="property">@ty</span>
+    )</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Return a new matrix that is a <code>copy</code> of this matrix.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">  copy: -&gt;
+    Matrix(<span class="property">@a</span>, <span class="property">@b</span>, <span class="property">@c</span>, <span class="property">@d</span>, <span class="property">@tx</span>, <span class="property">@ty</span>)</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Given a point in the pretransform coordinate space, returns the coordinates of
+that point after the transformation occurs. Unlike the standard transformation
+applied using the transformPoint() method, the deltaTransformPoint() method
+does not consider the translation parameters tx and ty.</p>
+<p>Returns a new <code>Point</code> transformed by this matrix ignoring tx and ty.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">  deltaTransformPoint: (point) -&gt;
+    Matrix.Point(
+      <span class="property">@a</span> * point.x + <span class="property">@c</span> * point.y,
+      <span class="property">@b</span> * point.x + <span class="property">@d</span> * point.y
+    )</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Returns a new matrix that is the inverse of this matrix.
+<a href="http://mathworld.wolfram.com/MatrixInverse.html">http://mathworld.wolfram.com/MatrixInverse.html</a></p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">  inverse: -&gt;
+    determinant = <span class="property">@a</span> * <span class="property">@d</span> - <span class="property">@b</span> * <span class="property">@c</span>
+
+    Matrix(
+      <span class="property">@d</span> / determinant,
+      -<span class="property">@b</span> / determinant,
+      -<span class="property">@c</span> / determinant,
+      <span class="property">@a</span> / determinant,
+      (<span class="property">@c</span> * <span class="property">@ty</span> - <span class="property">@d</span> * <span class="property">@tx</span>) / determinant,
+      (<span class="property">@b</span> * <span class="property">@tx</span> - <span class="property">@a</span> * <span class="property">@ty</span>) / determinant
+    )</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Returns a new matrix that corresponds this matrix multiplied by a
+a rotation matrix.</p>
+<p>The first parameter <code>theta</code> is the amount to rotate in radians.</p>
+<p>The second optional parameter, <code>aboutPoint</code> is the point about which the
+rotation occurs. Defaults to (0,0).</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">  rotate: (theta, aboutPoint) -&gt;
+    <span class="property">@concat</span>(Matrix.rotation(theta, aboutPoint))</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Returns a new matrix that corresponds this matrix multiplied by a
+a scaling matrix.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">  scale: (sx, sy, aboutPoint) -&gt;
+    <span class="property">@concat</span>(Matrix.scale(sx, sy, aboutPoint))</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Returns a new matrix that corresponds this matrix multiplied by a
+a skewing matrix.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">  skew: (skewX, skewY) -&gt;
+    <span class="property">@concat</span>(Matrix.skew(skewX, skewY))</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Returns a string representation of this matrix.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">  toString: -&gt;
+    <span class="string">"Matrix(<span class="subst">#{@a}</span>, <span class="subst">#{@b}</span>, <span class="subst">#{@c}</span>, <span class="subst">#{@d}</span>, <span class="subst">#{@tx}</span>, <span class="subst">#{@ty}</span>)"</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Returns the result of applying the geometric transformation represented by the
+Matrix object to the specified point.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">  transformPoint: (point) -&gt;
+    Matrix.Point(
+      <span class="property">@a</span> * point.x + <span class="property">@c</span> * point.y + <span class="property">@tx</span>,
+      <span class="property">@b</span> * point.x + <span class="property">@d</span> * point.y + <span class="property">@ty</span>
+    )</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Translates the matrix along the x and y axes, as specified by the tx and ty parameters.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">  translate: (tx, ty) -&gt;
+    <span class="property">@concat</span>(Matrix.translation(tx, ty))</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Creates a matrix transformation that corresponds to the given rotation,
+around (0,0) or the specified point.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">Matrix.rotate = Matrix.<span class="function"><span class="title">rotation</span></span> = (theta, aboutPoint) -&gt;
+  rotationMatrix = Matrix(
+    Math.cos(theta),
+    Math.sin(theta),
+    -Math.sin(theta),
+    Math.cos(theta)
+  )
+
+  <span class="keyword">if</span> aboutPoint?
+    rotationMatrix =
+      Matrix.translation(aboutPoint.x, aboutPoint.y).concat(
+        rotationMatrix
+      ).concat(
+        Matrix.translation(-aboutPoint.x, -aboutPoint.y)
+      )
+
+  <span class="keyword">return</span> rotationMatrix</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Returns a matrix that corresponds to scaling by factors of sx, sy along
+the x and y axis respectively.</p>
+<p>If only one parameter is given the matrix is scaled uniformly along both axis.</p>
+<p>If the optional aboutPoint parameter is given the scaling takes place
+about the given point.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">Matrix.<span class="function"><span class="title">scale</span></span> = (sx, sy, aboutPoint) -&gt;
+  sy = sy || sx
+
+  scaleMatrix = Matrix(sx, <span class="number">0</span>, <span class="number">0</span>, sy)
+
+  <span class="keyword">if</span> aboutPoint
+    scaleMatrix =
+      Matrix.translation(aboutPoint.x, aboutPoint.y).concat(
+        scaleMatrix
+      ).concat(
+        Matrix.translation(-aboutPoint.x, -aboutPoint.y)
+      )
+
+  <span class="keyword">return</span> scaleMatrix</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Returns a matrix that corresponds to a skew of skewX, skewY.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">Matrix.<span class="function"><span class="title">skew</span></span> = (skewX, skewY) -&gt;
+  Matrix(<span class="number">0</span>, Math.tan(skewY), Math.tan(skewX), <span class="number">0</span>)</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Returns a matrix that corresponds to a translation of tx, ty.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">Matrix.translate = Matrix.<span class="function"><span class="title">translation</span></span> = (tx, ty) -&gt;
+  Matrix(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>, tx, ty)</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <h2 id="helpers">Helpers</h2>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">
+</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript"><span class="function"><span class="title">isObject</span></span> = (object) -&gt;
+  Object.prototype.toString.call(object) <span class="keyword">is</span> <span class="string">"[object Object]"</span>
+
+<span class="function"><span class="title">frozen</span></span> = (object) -&gt;
+  Object.freeze?(object)
+
+  <span class="keyword">return</span> object</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <h2 id="constants">Constants</h2>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">
+</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>A constant representing the identity matrix.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">Matrix.IDENTITY = frozen Matrix()</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>A constant representing the horizontal flip transformation matrix.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">Matrix.HORIZONTAL_FLIP = frozen Matrix(-<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">1</span>)</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>A constant representing the vertical flip transformation matrix.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">Matrix.VERTICAL_FLIP = frozen Matrix(<span class="number">1</span>, <span class="number">0</span>, <span class="number">0</span>, -<span class="number">1</span>)</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <h2 id="exports">Exports</h2>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">
+</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">module.exports = Matrix</code></pre>
+</div>
+        </li>
+        
+    </ul>
+  </div>
+  <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js"></script>
+<script src="http://strd6.github.io/require/v0.2.2.js"></script><script>
+  $.ajax({
+    url: "http://strd6.github.io/interactive/v0.8.1.jsonp",
+    dataType: "jsonp",
+    jsonpCallback: "STRd6/interactive:v0.8.1",
+    cache: true
+  }).then(function(PACKAGE) {
+    Require.generateFor(PACKAGE)("./" + PACKAGE.entryPoint)
+  })
+</script><script src="package.js"></script>
+</body>
+</html>
